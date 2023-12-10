@@ -1,0 +1,60 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.select-strat {
+  text-align: center;
+  .strat-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    button {
+      display: block;
+      margin: 1rem;
+    }
+  }
+}
+
+.playground {
+  display: flex;
+  justify-content: space-between;
+  .video-holder {
+    height: 400px;
+    width: 500px;
+    position: relative;
+  }
+  video {
+    object-fit: cover;
+    transform: scale(-1, 1);
+  }
+  canvas {
+    height: 400px;
+    width: 500px;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  .loading-overlay {
+    height: 400px;
+    width: 500px;
+    position: absolute;
+    background-color: rgba(0,0,0,0.5);
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+  }
+  .divider {
+    background-color: black;
+    width: 3px;
+    height: 40px;
+  }
+  .col {
+    width: 45%;
+  }
+}
