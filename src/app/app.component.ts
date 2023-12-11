@@ -46,6 +46,10 @@ export class AppComponent {
   computerScore = 0;
   gameResult = "";
 
+  playerLosingStreak = 0;
+  pastPlayerMoves: GestureResult[] = [];
+  markovChain:  {[k: string]: any} = {};
+
   selectStrat(strat: number) {
     this.computerStrategy = strat;
     this.loadWebCam();
@@ -159,6 +163,7 @@ export class AppComponent {
       this.gameResult = "Couldn't find a hand... Try again?"
       return;
     }
+    this.pastPlayerMoves.push(this.playerSign);
     if (this.playerSign.name == this.computerSign) {
       this.gameResult = "Tie";
     } else if (
@@ -168,9 +173,11 @@ export class AppComponent {
     ) {
       this.gameResult = "You win!";
       this.playerScore++;
+      this.playerLosingStreak = 0;
     } else {
       this.gameResult = "You lose!";
       this.computerScore++;
+      this.playerLosingStreak++;
     }
   }
 
@@ -178,6 +185,72 @@ export class AppComponent {
     switch (this.computerStrategy) {
       case (ComputerStrategies.Random): {
         return Signs[Math.floor(Math.random() * 3) + 1];
+      };
+      case (ComputerStrategies.Conditional): {
+        // This strategy is called "win-stay, lose-shift"
+        // If a player wins once, it's likely that they'll repeat the same action as before
+        if (this.playerLosingStreak == 0 && this.pastPlayerMoves.length > 0) {
+          switch(this.pastPlayerMoves[this.pastPlayerMoves.length-1].name) {
+            case (Signs[1]): {
+              return Signs[2];
+            }
+            case (Signs[2]): {
+              return Signs[3];
+            }
+            default: {
+              return Signs[1];
+            }
+          }
+        }
+        // If a player has lost two or more times, they're most likely to shift to the play that would have beaten what they just lost to
+        else if (this.playerLosingStreak > 1  && this.pastPlayerMoves.length > 0) {
+          return this.pastPlayerMoves[this.pastPlayerMoves.length-1].name;
+        } else {
+          return Signs[Math.floor(Math.random() * 3) + 1];
+        }        
+      };
+      case (ComputerStrategies.Markov): {
+        // Add to markov chain from previous moves
+        let lastPlayed = this.pastPlayerMoves.length ? this.pastPlayerMoves[this.pastPlayerMoves.length - 1].name : undefined;
+        let nextLikely;
+
+        if (this.pastPlayerMoves.length >= 2 && lastPlayed) {
+          let pastMove = this.pastPlayerMoves[this.pastPlayerMoves.length - 2].name;
+          if (!this.markovChain[pastMove]) {
+            this.markovChain[pastMove] = {};
+          }
+          if (!this.markovChain[pastMove][lastPlayed]) {
+            this.markovChain[pastMove][lastPlayed] = { occurances: 1};
+          } else {
+            this.markovChain[pastMove][lastPlayed].occurances = this.markovChain[pastMove][lastPlayed].occurances + 1;
+          }
+        }
+        if (this.pastPlayerMoves.length > 1 && lastPlayed &&  this.markovChain[lastPlayed]){
+            for (let key in this.markovChain[lastPlayed]) {
+              if (!nextLikely) {
+                nextLikely = key;
+              } else {
+                if (this.markovChain[lastPlayed][key].occurances > this.markovChain[lastPlayed][nextLikely].occurances){
+                  nextLikely = key;
+                }
+              }
+            }
+        }
+        switch (nextLikely) {
+          case (Signs[1]): {
+            return Signs[2];
+          }
+          case (Signs[2]): {
+            return Signs[3];
+          }
+          case (Signs[3]): {
+            return Signs[1];
+          } 
+          default: {
+            // Couldn't predict from the chain, pick randomly
+            return Signs[Math.floor(Math.random() * 3) + 1];
+          }
+        }
       };
       default: {
         console.log("hasn't been implemented yet");
@@ -207,5 +280,8 @@ export class AppComponent {
     this.resetVariables();
     this.playerScore = 0;
     this.computerScore = 0;
+    this.playerLosingStreak = 0;
+    this.pastPlayerMoves = [];
+    this.markovChain = {};
   }
 }
