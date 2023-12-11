@@ -48,7 +48,12 @@ export class AppComponent {
 
   playerLosingStreak = 0;
   pastPlayerMoves: GestureResult[] = [];
-  markovChain:  {[k: string]: any} = {};
+  markovChain: {[k: string]: any} = {};
+  anticipation: {[k: string]: number} = {
+    'Rock': 0,
+    'Paper': 0,
+    'Scissors': 0
+  }
 
   selectStrat(strat: number) {
     this.computerStrategy = strat;
@@ -92,6 +97,13 @@ export class AppComponent {
         if (predictions && predictions[0]) {
           let translatedLandmarks = predictions[0].landmarks.map(point => [point[0] - (clippedWidth / 2), point[1], point[2]]);
           drawHand(context, translatedLandmarks);
+          if (this.computerStrategy == ComputerStrategies.Anticipate) {
+            let currentGesture = this.lookForGesture(predictions[0].landmarks);
+            if (currentGesture) {
+              this.anticipation[currentGesture.name] = this.anticipation[currentGesture.name] + 1;
+            }
+          }
+          // ANTICIPATE
           this.latestPosition = predictions[0].landmarks;
           if (!this.isCountingDown) {
             this.startCountdown();
@@ -145,7 +157,7 @@ export class AppComponent {
     }, 1000)
   }
 
-  lookForGesture(landmarks: number[][]) {
+  lookForGesture(landmarks: number[][]): GestureResult {
     const { gestures } = gestureList.estimate(landmarks, 7.5);
     return gestures ? gestures[0] : undefined;
   }
@@ -181,32 +193,40 @@ export class AppComponent {
     }
   }
 
+  getRandomSign(): string {
+    return Signs[Math.floor(Math.random() * 3) + 1];
+  }
+
+  getWinningSign(signToBeat: string): string {
+    switch (signToBeat) {
+      case (Signs[1]): {
+        return Signs[2];
+      }
+      case (Signs[2]): {
+        return Signs[3];
+      }
+      default: {
+        return Signs[1];
+      } 
+    }
+  }
+
   getComputerSign() {
     switch (this.computerStrategy) {
       case (ComputerStrategies.Random): {
-        return Signs[Math.floor(Math.random() * 3) + 1];
+        return this.getRandomSign();
       };
       case (ComputerStrategies.Conditional): {
         // This strategy is called "win-stay, lose-shift"
         // If a player wins once, it's likely that they'll repeat the same action as before
         if (this.playerLosingStreak == 0 && this.pastPlayerMoves.length > 0) {
-          switch(this.pastPlayerMoves[this.pastPlayerMoves.length-1].name) {
-            case (Signs[1]): {
-              return Signs[2];
-            }
-            case (Signs[2]): {
-              return Signs[3];
-            }
-            default: {
-              return Signs[1];
-            }
-          }
+          return this.getWinningSign(this.pastPlayerMoves[this.pastPlayerMoves.length-1].name);
         }
         // If a player has lost two or more times, they're most likely to shift to the play that would have beaten what they just lost to
         else if (this.playerLosingStreak > 1  && this.pastPlayerMoves.length > 0) {
           return this.pastPlayerMoves[this.pastPlayerMoves.length-1].name;
         } else {
-          return Signs[Math.floor(Math.random() * 3) + 1];
+          return this.getRandomSign();
         }        
       };
       case (ComputerStrategies.Markov): {
@@ -236,25 +256,24 @@ export class AppComponent {
               }
             }
         }
-        switch (nextLikely) {
-          case (Signs[1]): {
-            return Signs[2];
-          }
-          case (Signs[2]): {
-            return Signs[3];
-          }
-          case (Signs[3]): {
-            return Signs[1];
-          } 
-          default: {
-            // Couldn't predict from the chain, pick randomly
-            return Signs[Math.floor(Math.random() * 3) + 1];
-          }
+        if (!nextLikely) {
+          // Couldn't predict from the chain, pick randomly
+          return this.getRandomSign();
+        } else {
+          return this.getWinningSign(nextLikely);
         }
       };
+      case (ComputerStrategies.Anticipate): {
+        let mostAnticipated = Signs[1];
+        if (this.anticipation[Signs[2]] > this.anticipation[Signs[1]] && this.anticipation[Signs[2]] > this.anticipation[Signs[3]]){
+          mostAnticipated = Signs[2];
+        } else if (this.anticipation[Signs[3]] > this.anticipation[Signs[1]] && this.anticipation[Signs[3]] > this.anticipation[Signs[2]]) {
+          mostAnticipated = Signs[3];
+        }
+        return this.getWinningSign(mostAnticipated);
+      }
       default: {
-        console.log("hasn't been implemented yet");
-        return Signs[1];
+        return this.getRandomSign();
       }
     }
   }
@@ -266,6 +285,11 @@ export class AppComponent {
     this.gameResult = "";
     this.playerSign = undefined;
     this.computerSign = undefined;
+    this.anticipation = {
+      'Rock': 0,
+      'Paper': 0,
+      'Scissors': 0
+    }
   }
 
   reset() {
