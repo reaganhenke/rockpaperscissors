@@ -5,12 +5,10 @@
     <section class="select-strat">
       <h2>Choose the computer's strategy</h2>
       <div class="strat-buttons">
-        <button (click)="selectStrat(1)">random</button>
-        <!-- https://arstechnica.com/science/2014/05/win-at-rock-paper-scissors-by-knowing-thy-opponent/ -->
-        <button (click)="selectStrat(2)">conditional</button>
-        <!-- https://medium.com/@alexkrameris/markov-chain-implementation-in-javascript-a698f371d66f -->
-        <button (click)="selectStrat(3)">markov</button>
-        <button (click)="selectStrat(4)">anticipate</button>
+        <button (click)="selectStrat(1)" mat-raised-button color="primary">random</button>
+        <button (click)="selectStrat(2)" mat-raised-button color="primary">conditional</button>
+        <button (click)="selectStrat(3)" mat-raised-button color="primary">markov</button>
+        <button (click)="selectStrat(4)" mat-raised-button color="primary">anticipate</button>
       </div>
     </section>
     } @else { @if(isCountingDown && countdown > 0) {

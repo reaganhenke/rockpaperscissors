@@ -1,5 +1,18 @@
 footer {
+  background-color: #333;
+  color: white;
+  padding: 0.5rem 1rem;
   display: flex;
   justify-content: space-between;
-  padding: 0 1rem;
+  align-items: center;
+  button {
+    color: white;
+    // outline: none;
+    // background-color: none;
+    // font: inherit;
+    // cursor: pointer;
+  }
+  a {
+    color: inherit;
+  }
 }

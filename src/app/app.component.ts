@@ -7,6 +7,7 @@ import * as handpose from '@tensorflow-models/handpose';
 import '@tensorflow/tfjs-backend-webgl';
 import { drawHand } from './hand-renderer';
 import { gestureList, GestureResult } from './fingerpose-handler';
+import { MatButtonModule } from '@angular/material/button';
 
 enum ComputerStrategies {
   Random = 1,
@@ -23,7 +24,7 @@ enum Signs {
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, HeaderComponent, FooterComponent],
+  imports: [CommonModule, RouterOutlet, HeaderComponent, FooterComponent, MatButtonModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
