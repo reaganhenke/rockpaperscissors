@@ -5,14 +5,22 @@
     <section class="select-strat">
       <h2>Choose the computer's strategy</h2>
       <div class="strat-buttons">
-        <button (click)="selectStrat(1)" mat-raised-button color="primary">random</button>
-        <button (click)="selectStrat(2)" mat-raised-button color="primary">conditional</button>
-        <button (click)="selectStrat(3)" mat-raised-button color="primary">markov</button>
-        <button (click)="selectStrat(4)" mat-raised-button color="primary">anticipate</button>
+        <button (click)="selectStrat(1)" mat-raised-button color="primary">
+          random
+        </button>
+        <button (click)="selectStrat(2)" mat-raised-button color="primary">
+          conditional
+        </button>
+        <button (click)="selectStrat(3)" mat-raised-button color="primary">
+          markov
+        </button>
+        <button (click)="selectStrat(4)" mat-raised-button color="primary">
+          anticipate
+        </button>
       </div>
     </section>
-    } @else { @if(isCountingDown && countdown > 0) {
-    <div class="countdown">
+    } @else { @if(isCountingDown) {
+    <div class="countdown" [@pulse]="countdown">
       @if (countdown == 5) { Ready? } @else if (countdown == 4) { Set? } @else {
       {{ countdown }}
       }
@@ -23,7 +31,10 @@
     }
     <section class="playground">
       <div class="left col">
-        <h2>Player {{ playerScore }}</h2>
+        <div class="header">
+          <div>Player</div>
+          <div>{{ playerScore }}</div>
+        </div>
         <div class="video-holder">
           <video
             [style.display]="isLoadingCamera ? 'block' : 'none'"
@@ -37,14 +48,18 @@
           <canvas #canvas width="500" height="400"></canvas>
           @if (isLoadingCamera) {
           <div class="loading-overlay">
+            <app-loading></app-loading>
             <div>{{ loadingStatus }}</div>
           </div>
           }
         </div>
       </div>
-      <div class="divider"></div>
+      <mat-divider [vertical]="true"></mat-divider>
       <div class="right col">
-        <h2>Computer {{ computerScore }}</h2>
+        <div class="header">
+          <div>Computer</div>
+          <div>{{ computerScore }}</div>
+        </div>
         @if(computerSign) {
         <div class="computer-result">
           {{ computerSign }}

@@ -8,6 +8,9 @@ import '@tensorflow/tfjs-backend-webgl';
 import { drawHand } from './hand-renderer';
 import { gestureList, GestureResult } from './fingerpose-handler';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
+import { animate, keyframes, style, transition, trigger } from '@angular/animations';
+import { LoadingComponent } from './loading/loading.component';
 
 enum ComputerStrategies {
   Random = 1,
@@ -24,7 +27,20 @@ enum Signs {
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, HeaderComponent, FooterComponent, MatButtonModule],
+  imports: [CommonModule, RouterOutlet, HeaderComponent, FooterComponent, MatButtonModule, MatDividerModule, LoadingComponent],
+  animations: [
+    trigger('pulse', [
+      transition('* => void', []),
+      transition('* => *', [
+        animate('1s', keyframes([
+          style({ opacity: 0, fontSize: '1em'}),
+          style({ opacity: 1, fontSize: '5em'}),
+          style({ opacity: 1, fontSize: '5em'}),
+          style({ opacity: 0, fontSize: '4em'}),
+        ]))
+      ])
+    ])
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -37,7 +53,7 @@ export class AppComponent {
   freezeVideo = false;
   model: handpose.HandPose | undefined;
   isLoadingCamera = true;
-  loadingStatus = "booting up webcam..."
+  loadingStatus = "connecting to webcam..."
   latestPosition: number[][] | undefined;
   countdown = 5;
   isCountingDown = false;
@@ -49,8 +65,8 @@ export class AppComponent {
 
   playerLosingStreak = 0;
   pastPlayerMoves: GestureResult[] = [];
-  markovChain: {[k: string]: any} = {};
-  anticipation: {[k: string]: number} = {
+  markovChain: { [k: string]: any } = {};
+  anticipation: { [k: string]: number } = {
     'Rock': 0,
     'Paper': 0,
     'Scissors': 0
@@ -104,9 +120,8 @@ export class AppComponent {
               this.anticipation[currentGesture.name] = this.anticipation[currentGesture.name] + 1;
             }
           }
-          // ANTICIPATE
-          this.latestPosition = predictions[0].landmarks;
-          if (!this.isCountingDown) {
+          this.latestPosition = predictions[0].landmarks; // ANTICIPATE
+          if (!this.isCountingDown && !this.freezeVideo) {
             this.startCountdown();
           }
         }
@@ -137,10 +152,11 @@ export class AppComponent {
   }
 
   incrementCountdown() {
+    this.countdown--;
     if (this.countdown > 0) {
-      this.countdown--;
       setTimeout(() => this.incrementCountdown(), 1000);
     } else {
+      this.isCountingDown = false;
       this.freezeVideo = true;
       if (this.latestPosition) {
         this.playerSign = this.lookForGesture(this.latestPosition);
@@ -208,7 +224,7 @@ export class AppComponent {
       }
       default: {
         return Signs[1];
-      } 
+      }
     }
   }
 
@@ -221,14 +237,14 @@ export class AppComponent {
         // This strategy is called "win-stay, lose-shift"
         // If a player wins once, it's likely that they'll repeat the same action as before
         if (this.playerLosingStreak == 0 && this.pastPlayerMoves.length > 0) {
-          return this.getWinningSign(this.pastPlayerMoves[this.pastPlayerMoves.length-1].name);
+          return this.getWinningSign(this.pastPlayerMoves[this.pastPlayerMoves.length - 1].name);
         }
         // If a player has lost two or more times, they're most likely to shift to the play that would have beaten what they just lost to
-        else if (this.playerLosingStreak > 1  && this.pastPlayerMoves.length > 0) {
-          return this.pastPlayerMoves[this.pastPlayerMoves.length-1].name;
+        else if (this.playerLosingStreak > 1 && this.pastPlayerMoves.length > 0) {
+          return this.pastPlayerMoves[this.pastPlayerMoves.length - 1].name;
         } else {
           return this.getRandomSign();
-        }        
+        }
       };
       case (ComputerStrategies.Markov): {
         // Add to markov chain from previous moves
@@ -241,21 +257,21 @@ export class AppComponent {
             this.markovChain[pastMove] = {};
           }
           if (!this.markovChain[pastMove][lastPlayed]) {
-            this.markovChain[pastMove][lastPlayed] = { occurances: 1};
+            this.markovChain[pastMove][lastPlayed] = { occurances: 1 };
           } else {
             this.markovChain[pastMove][lastPlayed].occurances = this.markovChain[pastMove][lastPlayed].occurances + 1;
           }
         }
-        if (this.pastPlayerMoves.length > 1 && lastPlayed &&  this.markovChain[lastPlayed]){
-            for (let key in this.markovChain[lastPlayed]) {
-              if (!nextLikely) {
+        if (this.pastPlayerMoves.length > 1 && lastPlayed && this.markovChain[lastPlayed]) {
+          for (let key in this.markovChain[lastPlayed]) {
+            if (!nextLikely) {
+              nextLikely = key;
+            } else {
+              if (this.markovChain[lastPlayed][key].occurances > this.markovChain[lastPlayed][nextLikely].occurances) {
                 nextLikely = key;
-              } else {
-                if (this.markovChain[lastPlayed][key].occurances > this.markovChain[lastPlayed][nextLikely].occurances){
-                  nextLikely = key;
-                }
               }
             }
+          }
         }
         if (!nextLikely) {
           // Couldn't predict from the chain, pick randomly
@@ -266,7 +282,7 @@ export class AppComponent {
       };
       case (ComputerStrategies.Anticipate): {
         let mostAnticipated = Signs[1];
-        if (this.anticipation[Signs[2]] > this.anticipation[Signs[1]] && this.anticipation[Signs[2]] > this.anticipation[Signs[3]]){
+        if (this.anticipation[Signs[2]] > this.anticipation[Signs[1]] && this.anticipation[Signs[2]] > this.anticipation[Signs[3]]) {
           mostAnticipated = Signs[2];
         } else if (this.anticipation[Signs[3]] > this.anticipation[Signs[1]] && this.anticipation[Signs[3]] > this.anticipation[Signs[2]]) {
           mostAnticipated = Signs[3];
@@ -300,7 +316,7 @@ export class AppComponent {
 
   changeStrategy() {
     this.computerStrategy = undefined;
-    this.loadingStatus = "booting up webcam..."
+    this.loadingStatus = "connecting to webcam..."
     this.isLoadingCamera = true;
     this.resetVariables();
     this.playerScore = 0;
