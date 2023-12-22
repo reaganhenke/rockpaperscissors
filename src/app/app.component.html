@@ -19,16 +19,27 @@
         </button>
       </div>
     </section>
-    } @else { @if(isCountingDown) {
-    <div class="countdown" [@pulse]="countdown">
-      @if (countdown == 5) { Ready? } @else if (countdown == 4) { Set? } @else {
-      {{ countdown }}
+    } @else {
+    <div class="result">
+      @if(isCountingDown) {
+      <div class="countdown" [@pulse]="countdown">
+        @if (countdown == 5) { Ready? } @else if (countdown == 4) { Set? } @else
+        {
+        {{ countdown }}
+        }
+      </div>
+      } @else if (countdown == 0 && freezeVideo) {
+      <button mat-stroked-button color="primary" (click)="changeStrategy()">
+        < Change Computer Strategy
+      </button>
+      <div>
+        {{ gameResult }}
+        <button mat-flat-button color="primary" (click)="reset()">
+          Play again?
+        </button>
+      </div>
       }
     </div>
-    } @else if (countdown == 0 && freezeVideo) {
-    {{ gameResult }} <button (click)="reset()">Again?</button>
-    <button (click)="changeStrategy()">Change Computer Strategy</button>
-    }
     <section class="playground">
       <div class="left col">
         <div class="header">
@@ -53,6 +64,11 @@
           </div>
           }
         </div>
+        <div class="player-result">
+          @if (freezeVideo) {
+            <i>{{ playerResult() }}</i>
+          }
+        </div>
       </div>
       <mat-divider [vertical]="true"></mat-divider>
       <div class="right col">
@@ -67,9 +83,7 @@
         }
       </div>
     </section>
-    @if (freezeVideo) {
-    {{ playerResult() }}
-    } }
+    }
   </main>
   <app-footer></app-footer>
 </div>

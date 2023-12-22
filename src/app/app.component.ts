@@ -194,17 +194,17 @@ export class AppComponent {
     }
     this.pastPlayerMoves.push(this.playerSign);
     if (this.playerSign.name == this.computerSign) {
-      this.gameResult = "Tie";
+      this.gameResult = "It's a tie!";
     } else if (
       this.playerSign.name == Signs[1] && this.computerSign == Signs[3]
       || this.playerSign.name == Signs[2] && this.computerSign == Signs[1]
       || this.playerSign.name == Signs[3] && this.computerSign == Signs[2]
     ) {
-      this.gameResult = "You win!";
+      this.gameResult = "Well done, you win!";
       this.playerScore++;
       this.playerLosingStreak = 0;
     } else {
-      this.gameResult = "You lose!";
+      this.gameResult = "Aww, you lose!";
       this.computerScore++;
       this.playerLosingStreak++;
     }

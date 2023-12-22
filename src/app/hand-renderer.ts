@@ -1,4 +1,4 @@
-const circleRadius = 3;
+const circleRadius = 5;
 
 function drawPoint(ctx: CanvasRenderingContext2D, x: number, y: number) {
   ctx.beginPath();
@@ -25,8 +25,9 @@ function drawFinger(ctx: CanvasRenderingContext2D, keypoints: number[][]) {
 }
 
 export const drawHand = (ctx: CanvasRenderingContext2D, keypoints: number[][]) => {
-  ctx.strokeStyle = 'red';
-  ctx.fillStyle = 'red';
+  ctx.strokeStyle = '#3f51b5';
+  ctx.lineWidth = 3;
+  ctx.fillStyle = '#3f51b5';
 
   // draw palm 
   drawPath(ctx, [keypoints[0], keypoints[5], keypoints[9], keypoints[13], keypoints[17], keypoints[0]]);
