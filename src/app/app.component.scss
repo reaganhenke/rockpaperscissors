@@ -9,7 +9,7 @@ main {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  justify-content: space-around;
+  justify-content: center;
 }
 
 .select-strat {
@@ -32,7 +32,12 @@ main {
   box-sizing: border-box;
   display: flex;
   justify-content: center;
-  min-height: 4.25em;
+  min-height: 150px;
+  align-items: center;
+  .countdown {
+    opacity: 0;
+    font-size: 3em;
+  }
   & > button {
     position: absolute;
     left: 1em;
@@ -95,17 +100,6 @@ main {
   justify-content: space-between;
   align-items: center;
   font-weight: bold;
-}
-
-.countdown {
-  opacity: 0;
-  font-size: 1em;
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 3em;
-  z-index: 10;
 }
 
 .player-result {
