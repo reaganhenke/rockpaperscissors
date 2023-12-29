@@ -44,7 +44,7 @@
       <div class="left col">
         <div class="header">
           <div>Player</div>
-          <div>{{ playerScore }}</div>
+          <div>{{ playerScore() }}</div>
         </div>
         <div class="video-holder">
           <video
@@ -74,7 +74,7 @@
       <div class="right col">
         <div class="header">
           <div>Computer</div>
-          <div>{{ computerScore }}</div>
+          <div>{{ computerScore() }}</div>
         </div>
         @if(computerSign) {
         <div class="computer-result">

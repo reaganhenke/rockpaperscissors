@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './header/header.component';
@@ -33,10 +33,10 @@ enum Signs {
       transition('* => void', []),
       transition('* => *', [
         animate('1s', keyframes([
-          style({ opacity: 0, fontSize: '1em'}),
-          style({ opacity: 1, fontSize: '5em'}),
-          style({ opacity: 1, fontSize: '5em'}),
-          style({ opacity: 0, fontSize: '4em'}),
+          style({ opacity: 0, fontSize: '1em' }),
+          style({ opacity: 1, fontSize: '5em' }),
+          style({ opacity: 1, fontSize: '5em' }),
+          style({ opacity: 0, fontSize: '4em' }),
         ]))
       ])
     ])
@@ -48,25 +48,24 @@ export class AppComponent {
   @ViewChild('canvas') canvas: ElementRef<HTMLCanvasElement> | undefined;
   @ViewChild('video') video: ElementRef<HTMLVideoElement> | undefined;
 
-  computerStrategy: ComputerStrategies | undefined;
-  stream: MediaStream | undefined;
-  freezeVideo = false;
-  model: handpose.HandPose | undefined;
-  isLoadingCamera = true;
-  loadingStatus = "connecting to webcam..."
-  latestPosition: number[][] | undefined;
-  countdown = 5;
-  isCountingDown = false;
-  playerSign: GestureResult | undefined;
-  computerSign: string | undefined;
-  playerScore = 0;
-  computerScore = 0;
-  gameResult = "";
-
-  playerLosingStreak = 0;
-  pastPlayerMoves: GestureResult[] = [];
-  markovChain: { [k: string]: any } = {};
-  anticipation: { [k: string]: number } = {
+  protected computerStrategy: ComputerStrategies | undefined;
+  protected stream: MediaStream | undefined;
+  protected freezeVideo = false;
+  protected model: handpose.HandPose | undefined;
+  protected isLoadingCamera = true;
+  protected loadingStatus = "connecting to webcam..."
+  protected countdown = 5;
+  protected isCountingDown = false;
+  protected playerSign: GestureResult | undefined;
+  protected computerSign: string | undefined;
+  protected readonly playerScore = signal(0);
+  protected readonly computerScore = signal(0);
+  protected gameResult = "";
+  private latestPosition: number[][] | undefined;
+  private playerLosingStreak = 0;
+  private pastPlayerMoves: GestureResult[] = [];
+  private markovChain: { [k: string]: any } = {};
+  private anticipation: { [k: string]: number } = {
     'Rock': 0,
     'Paper': 0,
     'Scissors': 0
@@ -201,11 +200,11 @@ export class AppComponent {
       || this.playerSign.name == Signs[3] && this.computerSign == Signs[2]
     ) {
       this.gameResult = "Well done, you win!";
-      this.playerScore++;
+      this.playerScore.set(this.playerScore() + 1);
       this.playerLosingStreak = 0;
     } else {
       this.gameResult = "Aww, you lose!";
-      this.computerScore++;
+      this.computerScore.set(this.computerScore() + 1);
       this.playerLosingStreak++;
     }
   }
@@ -319,8 +318,8 @@ export class AppComponent {
     this.loadingStatus = "connecting to webcam..."
     this.isLoadingCamera = true;
     this.resetVariables();
-    this.playerScore = 0;
-    this.computerScore = 0;
+    this.playerScore.set(0);
+    this.computerScore.set(0);
     this.playerLosingStreak = 0;
     this.pastPlayerMoves = [];
     this.markovChain = {};
