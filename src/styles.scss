@@ -1,9 +1,24 @@
-
-html, body {
+html,
+body {
   height: 100%;
   width: 100%;
   margin: 0;
 }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-image: url(assets/circuit.png);
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: absolute;
+  background: radial-gradient(
+    rgba(255, 255, 255, 0.9) 70%,
+    rgba(255, 255, 255, 0.5)
+  );
+  height: 100%;
+  width: 100%;
+  z-index: -5;
+}
