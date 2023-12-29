@@ -112,3 +112,15 @@ main {
   min-height: 16px;
   font-size: 0.85em;
 }
+
+.computer-result {
+  display: flex;
+  flex-direction: column;
+  height: 400px;
+  justify-content: center;
+  align-items: center;
+  .emoji {
+    font-size: 150px;
+    transform: rotate(-45deg);
+  }
+}

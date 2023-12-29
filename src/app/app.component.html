@@ -78,6 +78,19 @@
         </div>
         @if(computerSign) {
         <div class="computer-result">
+          <div class="emoji">
+            @switch (computerSign) {
+              @case ('Rock') {
+                ✊
+              }
+              @case ('Paper') {
+                ✋
+              }
+              @default {
+              ✌️ 
+              }
+            }
+          </div>
           {{ computerSign }}
         </div>
         }
