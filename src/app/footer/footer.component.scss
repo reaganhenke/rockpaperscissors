@@ -5,10 +5,11 @@ footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.9em;
   button {
     color: white;
-    font-size: 0.9em;
+  }
+  div {
+    font-size: 14px;
   }
   a {
     color: inherit;
