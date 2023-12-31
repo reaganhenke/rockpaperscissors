@@ -61,6 +61,8 @@ export class AppComponent {
   protected readonly playerScore = signal(0);
   protected readonly computerScore = signal(0);
   protected gameResult = "";
+  protected readonly isMuted = signal(false);
+
   private latestPosition: number[][] | undefined;
   private playerLosingStreak = 0;
   private pastPlayerMoves: GestureResult[] = [];
@@ -153,6 +155,7 @@ export class AppComponent {
   incrementCountdown() {
     this.countdown--;
     if (this.countdown > 0) {
+      this.playAudio("countdown");
       setTimeout(() => this.incrementCountdown(), 1000);
     } else {
       this.isCountingDown = false;
@@ -168,6 +171,7 @@ export class AppComponent {
   startCountdown() {
     this.isCountingDown = true;
     this.countdown = 5;
+    this.playAudio("countdown");
     setTimeout(() => {
       this.incrementCountdown();
     }, 1000)
@@ -194,16 +198,19 @@ export class AppComponent {
     this.pastPlayerMoves.push(this.playerSign);
     if (this.playerSign.name == this.computerSign) {
       this.gameResult = "It's a tie!";
+      this.playAudio("tie");
     } else if (
       this.playerSign.name == Signs[1] && this.computerSign == Signs[3]
       || this.playerSign.name == Signs[2] && this.computerSign == Signs[1]
       || this.playerSign.name == Signs[3] && this.computerSign == Signs[2]
     ) {
       this.gameResult = "Well done, you win!";
+      this.playAudio("win");
       this.playerScore.set(this.playerScore() + 1);
       this.playerLosingStreak = 0;
     } else {
       this.gameResult = "Aww, you lose!";
+      this.playAudio("lose");
       this.computerScore.set(this.computerScore() + 1);
       this.playerLosingStreak++;
     }
@@ -292,6 +299,20 @@ export class AppComponent {
         return this.getRandomSign();
       }
     }
+  }
+
+  toggleAudio() {
+    this.isMuted.set(!this.isMuted());
+  }
+
+  playAudio(path: string){
+    if (this.isMuted()) {
+      return;
+    }
+    let audio = new Audio();
+    audio.src = "assets/" + path + ".mp3";
+    audio.load();
+    audio.play();
   }
 
   resetVariables() {

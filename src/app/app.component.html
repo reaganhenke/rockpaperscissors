@@ -3,7 +3,7 @@
   <main>
     @if (!computerStrategy) {
     <section class="select-strat">
-      <h2>Choose the computer's strategy</h2>
+      <h2>Choose the computer's strategy:</h2>
       <div class="strat-buttons">
         <button (click)="selectStrat(1)" mat-raised-button color="primary">
           random
@@ -66,7 +66,7 @@
         </div>
         <div class="player-result">
           @if (freezeVideo) {
-            <i>{{ playerResult() }}</i>
+          <i>{{ playerResult() }}</i>
           }
         </div>
       </div>
@@ -79,23 +79,23 @@
         @if(computerSign) {
         <div class="computer-result">
           <div class="emoji">
-            @switch (computerSign) {
-              @case ('Rock') {
-                ✊
-              }
-              @case ('Paper') {
-                ✋
-              }
-              @default {
-              ✌️ 
-              }
-            }
+            @switch (computerSign) { @case ('Rock') { ✊ } @case ('Paper') { ✋
+            } @default { ✌️ } }
           </div>
           {{ computerSign }}
         </div>
         }
       </div>
     </section>
+    <div class="volume">
+
+
+
+      <button aria-label="volume" (click)="toggleAudio()">
+        @if(isMuted()) {
+        <img src="assets/mute.svg" alt />} @else { <img src="assets/volume.svg" alt />}
+      </button>
+    </div>
     }
   </main>
   <app-footer></app-footer>
