@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "dist/rockpaperscissors",
+    "public": "dist/rockpaperscissors/browser",
     "ignore": [
       "firebase.json",
       "**/.*",
