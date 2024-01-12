@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "tensorflowrockpaperscissors": {
+      "hosting": {
+        "rockpaperscissors": [
+          "tensorflowrockpaperscissors"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "tensorflowrockpaperscissors"
+  }
+}

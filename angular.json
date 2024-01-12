@@ -96,6 +96,23 @@
             ],
             "scripts": []
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {
+            "version": 2
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "rockpaperscissors:build:production",
+              "serveTarget": "rockpaperscissors:serve:production"
+            },
+            "development": {
+              "buildTarget": "rockpaperscissors:build:development",
+              "serveTarget": "rockpaperscissors:serve:development"
+            }
+          },
+          "defaultConfiguration": "production"
         }
       }
     }
