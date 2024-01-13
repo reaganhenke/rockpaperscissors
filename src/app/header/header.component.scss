@@ -2,15 +2,24 @@ h1 {
   margin: 0;
   padding: 2rem;
   text-align: center;
-  font-family: 'Bungee', sans-serif;
+  font-family: "Bungee", sans-serif;
   font-size: 4em;
   color: #97a7ff;
   position: relative;
-  &::before{
+  &::before {
     content: "Rock, Paper, Scissors!";
     color: black;
     position: absolute;
-    margin-left: 4px;
-    margin-top: -3px;
+    width: calc(100% - 8px);
+    left: 50%;
+    transform: translate(calc(-50% + 4px), -3px);
+    padding: 0 calc(2rem - 4px) 0 calc(2rem - 4px);
+    box-sizing: border-box;
+  }
+}
+
+@media screen and (max-width: 460px) {
+  h1 {
+    font-size: 15vw;
   }
 }

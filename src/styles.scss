@@ -13,7 +13,7 @@ body {
 
 body::before {
   content: "";
-  position: absolute;
+  position: fixed;
   background: radial-gradient(
     rgba(255, 255, 255, 0.9) 70%,
     rgba(255, 255, 255, 0.5)
