@@ -148,6 +148,8 @@ export class AppComponent {
         this.drawVideoOnCanvas();
       })
       .catch((err) => {
+        alert('No video source found. Try restarting your browser and checking your web cam is connected properly!');
+        this.computerStrategy = undefined;
         console.error(err);
       });
   }
