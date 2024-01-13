@@ -62,6 +62,7 @@ export class AppComponent {
   protected readonly computerScore = signal(0);
   protected gameResult = "";
   protected readonly isMuted = signal(false);
+  protected lookingForHand = false;
 
   private latestPosition: number[][] | undefined;
   private playerLosingStreak = 0;
@@ -115,6 +116,7 @@ export class AppComponent {
         if (predictions && predictions[0]) {
           let translatedLandmarks = predictions[0].landmarks.map(point => [point[0] - (clippedWidth / 2), point[1], point[2]]);
           drawHand(context, translatedLandmarks);
+          this.lookingForHand = false;
           if (this.computerStrategy == ComputerStrategies.Anticipate) {
             let currentGesture = this.lookForGesture(predictions[0].landmarks);
             if (currentGesture) {
@@ -143,7 +145,7 @@ export class AppComponent {
         return handpose.load();
       })
       .then((model) => {
-        this.loadingStatus = "processing image and looking for hands..."
+        this.lookingForHand = true;
         this.model = model;
         this.drawVideoOnCanvas();
       })

@@ -67,6 +67,8 @@
         <div class="player-result">
           @if (freezeVideo) {
           <i>{{ playerResult() }}</i>
+          } @else if (lookingForHand) {
+          <i>Bring your hand closer to the camera...</i>
           }
         </div>
       </div>
@@ -88,12 +90,10 @@
       </div>
     </section>
     <div class="volume">
-
-
-
       <button aria-label="volume" (click)="toggleAudio()">
         @if(isMuted()) {
-        <img src="assets/mute.svg" alt />} @else { <img src="assets/volume.svg" alt />}
+        <img src="assets/mute.svg" alt />} @else {
+        <img src="assets/volume.svg" alt />}
       </button>
     </div>
     }
