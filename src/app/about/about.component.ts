@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import {
-  MatDialog,
-  MAT_DIALOG_DATA,
   MatDialogRef,
   MatDialogTitle,
   MatDialogContent,
@@ -17,7 +15,7 @@ import {
     MatDialogTitle,
     MatDialogContent,
     MatDialogActions,
-    MatDialogClose,],
+    MatDialogClose],
   templateUrl: './about.component.html',
   styleUrl: './about.component.scss'
 })
@@ -26,7 +24,7 @@ export class AboutComponent {
     public dialogRef: MatDialogRef<AboutComponent>
   ) { }
 
-  onNoClick(): void {
+  close(): void {
     this.dialogRef.close();
   }
 }
