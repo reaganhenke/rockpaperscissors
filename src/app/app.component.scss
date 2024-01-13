@@ -33,9 +33,10 @@ main {
   box-sizing: border-box;
   display: flex;
   justify-content: center;
-  min-height: 150px;
+  min-height: 100px;
   align-items: center;
   .countdown {
+    position: fixed;
     opacity: 0;
     font-size: 3em;
   }
